@@ -13,7 +13,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import show.micro.authService.jwt.JwtAuthenticationEntryPoint;
 import show.micro.authService.filters.jwt.JwtRequestFilter;
 
 @Configuration
@@ -22,18 +21,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserDetailsService userDetailsService;
 
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
     private JwtRequestFilter jwtRequestFilter;
 
     private PasswordEncoder passwordEncoder;
 
     public WebSecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
-                             JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
                              JwtRequestFilter jwtRequestFilter,
                              PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
-        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.jwtRequestFilter = jwtRequestFilter;
         this.passwordEncoder = passwordEncoder;
     }
@@ -56,14 +51,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 authorizeRequests().
                 // allow '/authenticate' and '/sign-in', etc. to run without authentication
                         antMatchers("/authenticate", "/register").permitAll().
-                // other requests should be authenticated or will fall with help of JwtAuthenticationEntryPoint
+                // other requests should be authenticated
                         anyRequest().authenticated().and().
-                // exceptions would be handled with jwtAuthenticationEntryPoint
-                        exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().
                 // don't store user state in session
                         sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // add our jwtRequestFilter before every UsernamePasswordAuthentication request
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
+
 }

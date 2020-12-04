@@ -53,10 +53,10 @@ public class AuthController {
             value = "/verifyToken",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             produces = {MediaType.ALL_VALUE})
-    public ResponseEntity<?> verifyToken(@RequestBody Request request, @RequestHeader HttpHeaders requestHeaders)  throws Exception{
+    public ResponseEntity<?> verifyToken(@RequestBody Request request, @RequestHeader HttpHeaders requestHeaders) throws Exception {
         logger.info(String.format(">>> Accepted request in /authenticate. Request body: %s", request));
         logger.info(String.format(">>> Request headers: %s", requestHeaders));
-       return ResponseEntity.ok("Token is valid");
+        return ResponseEntity.ok("Token is valid");
     }
 
     @PostMapping(
